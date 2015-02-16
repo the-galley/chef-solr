@@ -8,9 +8,9 @@
 include_recipe 'ark'
 include_recipe 'java' if node['solr']['install_java']
 
-src_filename = ::File.basename(node['solr']['url'])
+src_filename = node['solr']['url']
 
-ark_prefix_root = # {Chef::Config['file_cache_path']}/#{src_filename}" || node.ark[:prefix_root]
+ark_prefix_root = "# {Chef::Config['file_cache_path']}/#{src_filename}" || node.ark[:prefix_root]
 ark_prefix_home = node['solr']['dir'] || node.ark[:prefix_home]
 
 ark 'solr' do
@@ -18,7 +18,7 @@ ark 'solr' do
   url node['solr']['url']
   prefix_root ark_prefix_root
   prefix_home ark_prefix_home
-  checksum node['solr']['url']
+  checksum node['solr']['version_checksum']
 end
 
 directory node['solr']['data_dir'] do
