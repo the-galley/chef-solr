@@ -5,24 +5,20 @@
 # Copyright 2013, David Radcliffe
 #
 
+include_recipe 'ark'
 include_recipe 'java' if node['solr']['install_java']
 
-src_filename = ::File.basename(node['solr']['url'])
-src_filepath = "#{Chef::Config['file_cache_path']}/#{src_filename}"
-extract_path = "#{node['solr']['dir']}-#{node['solr']['version']}"
+src_filename = node['solr']['url']
 
-remote_file src_filepath do
-  source node['solr']['url']
-  action :create_if_missing
-end
+ark_prefix_root = "# {Chef::Config['file_cache_path']}/#{src_filename}" || node.ark[:prefix_root]
+ark_prefix_home = node['solr']['dir'] || node.ark[:prefix_home]
 
-bash 'unpack_solr' do
-  cwd ::File.dirname(src_filepath)
-  code <<-EOH
-    mkdir -p #{extract_path}
-    tar xzf #{src_filename} -C #{extract_path} --strip 1
-  EOH
-  not_if { ::File.exist?(extract_path) }
+ark 'solr' do
+  action :install
+  url node['solr']['url']
+  prefix_root ark_prefix_root
+  prefix_home ark_prefix_home
+  checksum node['solr']['version_checksum']
 end
 
 directory node['solr']['data_dir'] do
