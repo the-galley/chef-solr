@@ -38,12 +38,12 @@ template '/var/lib/solr.start' do
   group 'root'
   mode '0755'
   variables(
-    :solr_dir => extract_path,
-    :solr_home => node['solr']['data_dir'],
-    :port => node['solr']['port'],
-    :pid_file => node['solr']['pid_file'],
-    :log_file => node['solr']['log_file'],
-    :java_options => node['solr']['java_options']
+    solr_dir: extract_path,
+    solr_home: node['solr']['data_dir'],
+    port: node['solr']['port'],
+    pid_file: node['solr']['pid_file'],
+    log_file: node['solr']['log_file'],
+    java_options: node['solr']['java_options']
   )
   only_if { !platform_family?('debian') }
 end
@@ -54,16 +54,16 @@ template '/etc/init.d/solr' do
   group 'root'
   mode '0755'
   variables(
-    :solr_dir => extract_path,
-    :solr_home => node['solr']['data_dir'],
-    :port => node['solr']['port'],
-    :pid_file => node['solr']['pid_file'],
-    :log_file => node['solr']['log_file'],
-    :java_options => node['solr']['java_options']
+    solr_dir: extract_path,
+    solr_home: node['solr']['data_dir'],
+    port: node['solr']['port'],
+    pid_file: node['solr']['pid_file'],
+    log_file: node['solr']['log_file'],
+    java_options: node['solr']['java_options']
   )
 end
 
 service 'solr' do
-  supports :restart => true, :status => true
+  supports restart: true, status: true
   action [:enable, :start]
 end
