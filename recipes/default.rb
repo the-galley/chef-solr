@@ -5,27 +5,20 @@
 # Copyright 2013, David Radcliffe
 #
 
+include_recipe 'apt::default'
 include_recipe 'ark'
 include_recipe 'java' if node['solr']['install_java']
 
-src_filename = node['solr']['url']
-
-ark_prefix_root = "# {Chef::Config['file_cache_path']}/#{src_filename}" || node.ark[:prefix_root]
-ark_prefix_home = node['solr']['dir'] || node.ark[:prefix_home]
+ark_prefix_root = node.solr[:dir] || node.ark[:prefix_root]
+ark_prefix_home = node.solr[:dir] || node.ark[:prefix_home]
 
 ark 'solr' do
-  action :install
   url node['solr']['url']
+  checksum node['solr']['version_checksum']
+  owner 'root'
+  version "#{node['solr']['version']}"
   prefix_root ark_prefix_root
   prefix_home ark_prefix_home
-  checksum node['solr']['version_checksum']
-end
-
-directory node['solr']['data_dir'] do
-  owner 'root'
-  group 'root'
-  recursive true
-  action :create
 end
 
 template '/var/lib/solr.start' do
@@ -34,8 +27,8 @@ template '/var/lib/solr.start' do
   group 'root'
   mode '0755'
   variables(
-    solr_dir: extract_path,
-    solr_home: node['solr']['data_dir'],
+    solr_dir: "#{node.solr[:dir]}/solr",
+    solr_home: "#{node.solr[:data_dir]}/solr",
     port: node['solr']['port'],
     pid_file: node['solr']['pid_file'],
     log_file: node['solr']['log_file'],
@@ -50,8 +43,8 @@ template '/etc/init.d/solr' do
   group 'root'
   mode '0755'
   variables(
-    solr_dir: extract_path,
-    solr_home: node['solr']['data_dir'],
+    solr_dir: "#{node.solr[:dir]}/solr",
+    solr_home: "#{node.solr[:data_dir]}/solr",
     port: node['solr']['port'],
     pid_file: node['solr']['pid_file'],
     log_file: node['solr']['log_file'],
