@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd <%= @solr_dir %>/example
-COMMAND="java <%= @java_options %> -Djava.net.preferIPv4Stack=true -Djava.net.preferIPv4Addresses=true -Dsolr.solr.home=<%= @solr_home %> -Djetty.port=<%= @port %> -jar start.jar"
+COMMAND="java -Dsolr.solr.home=<%= @solr_home %> <%= @java_options %> -Djava.net.preferIPv4Stack=true -Djava.net.preferIPv4Addresses=true -Djetty.port=<%= @port %> -jar start.jar"
 nohup $COMMAND > <%= @log_file %> 2>&1 &
 echo $! > <%= @pid_file %>
 exit $?

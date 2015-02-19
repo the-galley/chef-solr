@@ -13,4 +13,6 @@ supports 'redhat'
 supports 'scientific'
 supports 'ubuntu'
 
+depends 'apt'
 depends 'java'
+depends 'ark'
